@@ -208,7 +208,7 @@ button{
 
 /*Background Gradiant*/
 .gradiant{
-    background: linear-gradient(to right, #fc8b56, #fd5656);
+    background: linear-gradient(to right, #5413FF, #D200FF);
 }
 
 /* Preloader Styles */
@@ -474,15 +474,17 @@ ul.nav > li > a.active{
     color: #fff;
 }
 .hero_mockup{
-    background: url(../img/mockup-1.png);
+    background: url(../img/tester.png);
     background-repeat: no-repeat;
     background-position: 80% center;
+    background-size: contain;
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
+
 }
 .hero_section:after{
     background: url(../img/wave.png);
