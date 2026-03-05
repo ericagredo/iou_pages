@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join Group | IOU</title>
+  <meta name="description" content="Join an IOU group invitation.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0c0f;
+      --card: #151922;
+      --border: #2a3142;
+      --text: #f2f4f8;
+      --muted: #a2aab8;
+      --accent: #5aa9ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1b2230 0%, var(--bg) 45%);
+      color: var(--text);
+    }
+
+    main {
+      width: 100%;
+      max-width: 520px;
+      background: rgba(21, 25, 34, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(4px);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .group {
+      margin-top: 14px;
+      color: var(--text);
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    button,
+    a.button {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+    }
+
+    button:active,
+    a.button:active {
+      transform: translateY(1px);
+    }
+
+    #open-app {
+      background: var(--accent);
+      color: #051a30;
+      flex: 1 1 180px;
+    }
+
+    #open-app:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    #get-app {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text);
+      flex: 1 1 180px;
+      text-align: center;
+    }
+
+    .hint {
+      margin-top: 14px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Join Group in IOU</h1>
+    <p id="message">Opening your invite...</p>
+    <p class="group" id="group-id" hidden></p>
+    <div class="actions">
+      <button id="open-app" type="button">Open IOU</button>
+      <a id="get-app" class="button" href="https://apps.apple.com/us/app/iou-easily-split-your-tab/id1589968294">Get IOU</a>
+    </div>
+    <p class="hint" id="hint">If IOU does not open, tap "Get IOU".</p>
+  </main>
+
+  <script>
+    (function () {
+      var APP_STORE_URL = "https://apps.apple.com/us/app/iou-easily-split-your-tab/id1589968294";
+      var params = new URLSearchParams(window.location.search);
+      var groupId = (params.get("groupId") || "").trim();
+      var message = document.getElementById("message");
+      var groupEl = document.getElementById("group-id");
+      var openAppButton = document.getElementById("open-app");
+      var getAppLink = document.getElementById("get-app");
+      var hint = document.getElementById("hint");
+
+      getAppLink.href = APP_STORE_URL;
+
+      if (!groupId) {
+        message.textContent = "This invite link is invalid or incomplete.";
+        openAppButton.disabled = true;
+        hint.textContent = "Ask for a new invite link and try again.";
+        return;
+      }
+
+      var deepLink = "iou://join?groupId=" + encodeURIComponent(groupId);
+      groupEl.hidden = false;
+      groupEl.textContent = "Group ID: " + groupId;
+
+      function openApp() {
+        window.location.href = deepLink;
+      }
+
+      openAppButton.addEventListener("click", openApp);
+
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (!isMobile) {
+        message.textContent = "Open this invite on your phone to join the group in IOU.";
+        return;
+      }
+
+      var appOpened = false;
+      var markAppOpened = function () {
+        appOpened = true;
+      };
+
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+          markAppOpened();
+        }
+      });
+      window.addEventListener("pagehide", markAppOpened);
+
+      openApp();
+      window.setTimeout(function () {
+        if (!appOpened && !document.hidden) {
+          window.location.href = APP_STORE_URL;
+        }
+      }, 1400);
+    })();
+  </script>
+</body>
+</html>

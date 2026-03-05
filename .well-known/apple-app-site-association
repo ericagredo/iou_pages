@@ -1,7 +1,11 @@
 {
   "applinks": {
+    "apps": [],
     "details": [
-      { "appIDs": ["XP5293KE77.com.agredo.iou"] }
+      {
+        "appID": "XP5293KE77.com.agredo.iou",
+        "paths": ["/join", "/join/*"]
+      }
     ]
   },
   "webcredentials": {
